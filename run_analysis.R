@@ -61,12 +61,14 @@ run_analysis<-function() {
   #    with the average of each variable for each activity and each subject.
   library(dplyr)
   
-  m.by.feature<-mean.by.feature(set2, 1, addlabels = T)
+  m.by.feature<-mean.by.feature(set2, 1, act.labels, addlabels = T)
   for(col.idx in 2:66) {
-    m.by.feature<-cbind(m.by.feature, mean.by.feature(set2, col.idx, addlabels = F))
+    m.by.feature<-cbind(m.by.feature, mean.by.feature(set2, col.idx, act.labels, addlabels = F))
   }
 
   write.csv(m.by.feature, "feature_means.csv")
+  
+  write.table(m.by.feature, "feature_means.txt", row.names = FALSE)
   
   m.by.feature
 }
@@ -93,7 +95,7 @@ transpose<-function(res, feat.name, act.label, addlabels = F) {
   z
 }
 
-mean.by.feature<-function(set2, set2.col.id, addlabels = F) {
+mean.by.feature<-function(set2, set2.col.id, act.labels, addlabels = F) {
   res<-with(set2, tapply(set2[[set2.col.id]], list(subject, activity), mean))
   transp<-transpose(res, names(set2)[set2.col.id], act.labels$V2[1], addlabels)
   transp<-rbind(transp, transpose(res, names(set2)[set2.col.id], act.labels$V2[2], addlabels))

@@ -83,9 +83,9 @@ source("run_analysis.R")
   library(dplyr)
 ```
 ```{r}
-  m.by.feature<-mean.by.feature(set2, 1, addlabels = T)
+  m.by.feature<-mean.by.feature(set2, 1, act.labels, addlabels = T)
   for(col.idx in 2:66) {
-    m.by.feature<-cbind(m.by.feature, mean.by.feature(set2, col.idx, addlabels = F))
+    m.by.feature<-cbind(m.by.feature, mean.by.feature(set2, col.idx, act.labels, addlabels = F))
   }
 
   write.csv(m.by.feature, "feature_means.csv")
@@ -141,7 +141,7 @@ This function calculates the mean of a selected feature, grouped by activity and
 #' @param set2 is the concatenated dataset containing the readings of all features in both, training and test, datasets
 #' @param set2.col.id is the index of $set2 data frame where the readings of a given feature are available
 #' @param addlabels is a boolean switch that controls if the funcion adds the subject and activity columns in the resulting data frame
-mean.by.feature<-function(set2, set2.col.id, addlabels = F) {
+mean.by.feature<-function(set2, set2.col.id, act.labels, addlabels = F) {
   res<-with(set2, tapply(set2[[set2.col.id]], list(subject, activity), mean))
   transp<-transpose(res, names(set2)[set2.col.id], act.labels$V2[1], addlabels)
   transp<-rbind(transp, transpose(res, names(set2)[set2.col.id], act.labels$V2[2], addlabels))
